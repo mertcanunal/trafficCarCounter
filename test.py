@@ -1,12 +1,12 @@
 
 import cv2
 import numpy as np
-from backgroundSubtructor import BgSubtractor, BGSUB_METHOD_ABSDIFF
+from backgroundSubtructor import BgSubtractor, BGSUB_METHOD_ABSDIFF, BGSUB_METHOD_MOVING_MEAN
 
 def toGray(frame):
     return cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
 
-bgSub = BgSubtractor(method=BGSUB_METHOD_ABSDIFF)
+bgSub = BgSubtractor(method=BGSUB_METHOD_MOVING_MEAN, bufferSize=40)
 cap = cv2.VideoCapture('data/Cars - 1900.mp4')
 
 if (cap.isOpened() == False):
@@ -20,8 +20,8 @@ while(cap.isOpened()):
     if ret == True:
 
         # Display the resulting frame
-        cv2.imshow('Frame', bgSub.processFrame(frame))
-
+        cv2.imshow('Frame', bgSub.processFrame(toGray(frame)))
+        cv2.imshow('Background', bgSub.bg)
         # Press Q on keyboard to  exit
         if cv2.waitKey(25) & 0xFF == ord('q'):
             break
